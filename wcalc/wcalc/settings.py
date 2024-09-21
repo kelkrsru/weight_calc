@@ -104,7 +104,7 @@ TIME_ZONE = 'Asia/Krasnoyarsk'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False if os.getenv('USE_TZ') == 'False' else True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
