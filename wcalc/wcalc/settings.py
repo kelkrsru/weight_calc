@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'core',
+    'settings',
+    'dealcard',
 ]
 
 MIDDLEWARE = [
@@ -130,6 +133,11 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
+PLACEMENT_APP = os.getenv('PLACEMENT_APP')
+HANDLER_APP = os.getenv('HANDLER_APP')
+TITLE_APP = os.getenv('TITLE_APP')
+DESCRIPTION_APP = os.getenv('DESCRIPTION_APP')
 
 ADMIN_REORDER = (
     {'label': 'Пользователи', 'app': 'users', 'models': [
