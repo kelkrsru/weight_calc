@@ -37,7 +37,7 @@ def install(request):
     bx24._access_token = portal.auth_id
     bx24._refresh_token = portal.refresh_id
 
-    params['HANDLER'] = urlunsplit(('https', portal.name, app_settings.HANDLER_APP))
+    params['HANDLER'] = urlunsplit(('https', portal.name, app_settings.HANDLER_APP, None, None))
 
     result = bx24.call('placement.bind', params)
     if 'error' in result:
