@@ -19,6 +19,7 @@ def install(request):
 
     params = {
         'PLACEMENT': app_settings.PLACEMENT_APP,
+        'HANDLER': app_settings.HANDLER_APP,
         'TITLE': app_settings.TITLE_APP,
         'DESCRIPTION': app_settings.DESCRIPTION_APP
     }
@@ -36,8 +37,6 @@ def install(request):
     bx24 = Bitrix24(portal.name)
     bx24._access_token = portal.auth_id
     bx24._refresh_token = portal.refresh_id
-
-    params['HANDLER'] = urlunsplit(('https', portal.name, app_settings.HANDLER_APP, None, None))
 
     result = bx24.call('placement.bind', params)
     if 'error' in result:
