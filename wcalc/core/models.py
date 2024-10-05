@@ -61,191 +61,90 @@ class Portals(models.Model):
         return self.name
 
 
-# class ProdTime(CreatedModel):
-#     """Модель товара со сроком производства."""
-#
-#     product_id_b24 = models.IntegerField(
-#         verbose_name='ID товарной позиции',
-#         db_index=True,
-#     )
-#     name = models.CharField(
-#         verbose_name='Наименование',
-#         max_length=1024,
-#     )
-#     name_for_print = models.CharField(
-#         verbose_name='Наименование в печатную форму',
-#         max_length=1024,
-#     )
-#     price = models.DecimalField(
-#         verbose_name='Цена со скидкой и налогом',
-#         help_text='Цена за единицу товарной позиции с учетом скидок и налогов',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     price_account = models.DecimalField(
-#         verbose_name='Цена со скидкой и налогом в валюте отчетов',
-#         help_text='Цена за единицу товарной позиции с учетом скидок и налогов,'
-#                   ' сконвертированная в валюту отчетов',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     price_exclusive = models.DecimalField(
-#         verbose_name='Цена со скидкой, без налога',
-#         help_text='Цена за единицу товарной позиции с учетом скидок, но без '
-#                   'учета налогов',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     price_netto = models.DecimalField(
-#         verbose_name='Цена без скидки, без налога',
-#         help_text='Цена за единицу товарной позиции без учета скидок и без '
-#                   'учета налогов',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     price_brutto = models.DecimalField(
-#         verbose_name='Цена с налогом, без скидки',
-#         help_text='Цена за единицу товарной позиции с учетом налогов, но без '
-#                   'учета скидок',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     quantity = models.DecimalField(
-#         verbose_name='Количество',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     measure_code = models.IntegerField(
-#         verbose_name='Код единицы измерения',
-#     )
-#     measure_name = models.CharField(
-#         verbose_name='Единица измерения',
-#         max_length=10,
-#     )
-#     bonus_type_id = models.IntegerField(
-#         verbose_name='Тип скидки',
-#         help_text='Может быть 1 для скидки в абсолютном значении и 2 для '
-#                   'скидки в процентах. По умолчанию равно 2'
-#     )
-#     bonus = models.DecimalField(
-#         verbose_name='Процент скидки',
-#         max_digits=5,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     bonus_sum = models.DecimalField(
-#         verbose_name='Сумма скидки',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     tax = models.DecimalField(
-#         verbose_name='Процент налога',
-#         max_digits=5,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     tax_included = models.BooleanField(
-#         verbose_name='Налог включен в цену',
-#         default=False,
-#     )
-#     tax_sum = models.DecimalField(
-#         verbose_name='Сумма налога',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     sum = models.DecimalField(
-#         verbose_name='Сумма',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#     )
-#     prod_time = models.DateField(
-#         verbose_name='Срок производства',
-#         null=True,
-#         blank=True,
-#     )
-#     count_days = models.DecimalField(
-#         verbose_name='Количество рабочих дней',
-#         max_digits=12,
-#         decimal_places=1,
-#         null=True,
-#         blank=True,
-#     )
-#     equivalent = models.DecimalField(
-#         verbose_name='Эквивалент',
-#         max_digits=12,
-#         decimal_places=4,
-#         null=True,
-#         blank=True,
-#     )
-#     equivalent_count = models.DecimalField(
-#         verbose_name='Эквивалент с учетом количества',
-#         max_digits=12,
-#         decimal_places=4,
-#         null=True,
-#         blank=True,
-#     )
-#     is_change_equivalent = models.BooleanField(
-#         verbose_name='Ручное изменение эквивалента',
-#         default=False,
-#     )
-#     income = models.DecimalField(
-#         verbose_name='Прибыль (план)',
-#         max_digits=12,
-#         decimal_places=2,
-#         null=True,
-#         blank=True
-#     )
-#     is_change_income = models.BooleanField(
-#         verbose_name='Ручное изменение прибыли',
-#         default=False,
-#     )
-#     finish = models.BooleanField(
-#         verbose_name='Выпуск изделия',
-#         default=False,
-#     )
-#     made = models.BooleanField(
-#         verbose_name='Готовность изделия',
-#         default=False,
-#     )
-#     factory_number = models.CharField(
-#         verbose_name='Заводской номер',
-#         max_length=255,
-#         null=True,
-#         blank=True,
-#     )
-#     smart_id_factory_number = models.PositiveIntegerField(
-#         verbose_name='ID элемента smart процесса Заводские номера',
-#         blank=True,
-#         null=True,
-#     )
-#     sort = models.PositiveIntegerField(
-#         verbose_name='Сортировка',
-#         default=0
-#     )
-#     portal = models.ForeignKey(
-#         Portals,
-#         verbose_name='Портал',
-#         on_delete=models.CASCADE,
-#     )
-#
-#     def __str__(self):
-#         return self.name
-#
-#     class Meta:
-#         abstract = True
-#         unique_together = ['product_id_b24', 'portal']
-#         indexes = [
-#             models.Index(fields=['product_id_b24', 'portal'], name='prod_id_b24_portal_index')
-#         ]
+class ProductRow(CreatedModel):
+    """Модель Товарной позиции."""
+
+    PRODUCTROW_ID = models.PositiveIntegerField('ID товарной позиции', db_index=True, )
+    OWNER_ID = models.PositiveIntegerField('ID владельца')
+    OWNER_TYPE = models.CharField('Тип владельца', max_length=256)
+    PRODUCT_ID = models.PositiveIntegerField('ID товара в каталоге')
+    PRODUCT_NAME = models.CharField('Наименование товарной позиции', max_length=1024)
+    ORIGINAL_PRODUCT_NAME = models.CharField('Наименование товара в каталоге', max_length=1024)
+    PRODUCT_DESCRIPTION = models.TextField('Описание товара', null=True, blank=True)
+    PRICE = models.DecimalField(
+        'Цена со скидкой и налогом',
+        help_text='Цена за единицу товарной позиции с учетом скидок и налогов',
+        max_digits=12, decimal_places=2, null=True
+    )
+    PRICE_EXCLUSIVE = models.DecimalField(
+        'Цена со скидкой, без налога',
+        help_text='Цена за единицу товарной позиции с учетом скидок, но без учета налогов',
+        max_digits=12, decimal_places=2, null=True
+    )
+    PRICE_NETTO = models.DecimalField(
+        'Цена без скидки, без налога',
+        help_text='Цена за единицу товарной позиции без учета скидок и без учета налогов',
+        max_digits=12, decimal_places=2, null=True
+    )
+    PRICE_BRUTTO = models.DecimalField(
+        'Цена с налогом, без скидки',
+        help_text='Цена за единицу товарной позиции с учетом налогов, но без учета скидок',
+        max_digits=12, decimal_places=2, null=True
+    )
+    PRICE_ACCOUNT = models.DecimalField(
+        'Цена со скидкой и налогом в валюте отчетов',
+        help_text='Цена за единицу товарной позиции с учетом скидок и налогов, конвертированная в валюту отчетов',
+        max_digits=12, decimal_places=2, null=True
+    )
+    QUANTITY = models.DecimalField('Количество', max_digits=12, decimal_places=2, null=True)
+    DISCOUNT_TYPE_ID = models.PositiveSmallIntegerField(
+        'Тип скидки',
+        help_text='Может быть 1 для скидки в абсолютном значении и 2 для скидки в процентах. По умолчанию равно 2'
+    )
+    DISCOUNT_RATE = models.DecimalField('Процент скидки', max_digits=5, decimal_places=2, null=True)
+    DISCOUNT_SUM = models.DecimalField('Сумма скидки', max_digits=12, decimal_places=2, null=True)
+    TAX_RATE = models.DecimalField('Процент налога', max_digits=5, decimal_places=2, null=True, blank=True)
+    TAX_INCLUDED = models.CharField(
+        'Налог включен в цену',
+        help_text='Может иметь значения "Y" или "N"',
+        max_length=2
+    )
+    CUSTOMIZED = models.CharField(
+        'Кастомизированное',
+        help_text='Может иметь значения "Y" или "N". Назначение поля неизвестно',
+        max_length=2
+    )
+    MEASURE_CODE = models.PositiveIntegerField('Код единицы измерения')
+    MEASURE_NAME = models.CharField('Единица измерения', max_length=10)
+    SORT = models.PositiveIntegerField('Сортировка')
+    XML_ID = models.PositiveIntegerField('XML_ID', null=True, blank=True)
+    TYPE = models.PositiveSmallIntegerField(
+        'Тип товарной позиции',
+        help_text='1 - простой товар, 4 - торговое предложение/вариация'
+    )
+    STORE_ID = models.PositiveSmallIntegerField('ID склада', null=True, blank=True)
+    RESERVE_ID = models.PositiveIntegerField('ID резерва', null=True, blank=True)
+    DATE_RESERVE_END = models.CharField('Дата истечения резерва', max_length=256, null=True, blank=True)
+    RESERVE_QUANTITY = models.DecimalField('Количество в резерве', max_digits=12, decimal_places=2, null=True,
+                                           blank=True)
+    PORTAL = models.ForeignKey(Portals, verbose_name='Портал', on_delete=models.CASCADE)
+    ####################################################################################
+    PACKAGE = models.ForeignKey('Package', verbose_name='Упаковка', on_delete=models.PROTECT,
+                                related_name='package_productrows', null=True, blank=True)
+    QUANTITY_PACKAGES = models.PositiveIntegerField('Количество упаковок', null=True, blank=True)
+    QUANTITY_PALLETS = models.DecimalField('Количество паллет', max_digits=12, decimal_places=2, null=True, blank=True)
+    TONNAGE = models.DecimalField('Тоннаж заказа', max_digits=12, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f'Товарная позиция ID {self.PRODUCTROW_ID} NAME {self.PRODUCT_NAME}'
+
+    class Meta:
+        verbose_name = 'Товарная позиция'
+        verbose_name_plural = 'Товарные позиции'
+        unique_together = ['PRODUCTROW_ID', 'PORTAL']
+        indexes = [
+            models.Index(fields=['PRODUCTROW_ID', 'PORTAL'], name='PRODUCTROW_ID_PORTAL_index')
+        ]
 
 
 class Entity(CreatedModel):
@@ -305,3 +204,20 @@ class Responsible(CreatedModel):
     class Meta:
         verbose_name = 'Ответственный'
         verbose_name_plural = 'Ответственные'
+
+
+class Package(CreatedModel):
+    """Модель Упаковки."""
+    ACTIVE = models.BooleanField('Активность', default=True)
+    NAME = models.CharField('Наименование', max_length=255, unique=True)
+    WEIGHT = models.DecimalField('Вес', max_digits=12, decimal_places=2)
+    QUANTITY_JARS = models.PositiveIntegerField('Количество банок')
+    QUANTITY_ON_PALLET = models.PositiveIntegerField('Количество на паллете')
+    WEIGHT_BRUTTO = models.DecimalField('Вес брутто паллета', max_digits=12, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.NAME}'
+
+    class Meta:
+        verbose_name = 'Упаковка'
+        verbose_name_plural = 'Упаковки'

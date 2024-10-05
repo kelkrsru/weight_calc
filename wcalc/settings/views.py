@@ -1,10 +1,14 @@
-from django.shortcuts import render, get_object_or_404
+from django.conf import settings as app_settings
+from django.core.exceptions import BadRequest
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse_lazy
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 
+import core.methods as core_methods
 from core.bitrix24.bitrix24 import create_portal
-from core.methods import get_current_user
-from core.models import Portals
+from settings.forms import SettingsPortalForm
+from settings.models import SettingsPortal
 
 
 @xframe_options_exempt
@@ -12,26 +16,38 @@ from core.models import Portals
 def index(request):
 
     template = 'settings/index.html'
+    title = 'Настройки приложения'
+    title_app = app_settings.TITLE_APP
+
     auth_id = ''
 
-    if request.method == 'POST':
-        member_id = request.POST.get('member_id')
-        if 'AUTH_ID' in request.POST:
-            auth_id: str = request.POST.get('AUTH_ID')
-    elif request.method == 'GET':
-        member_id = request.GET.get('member_id')
-    else:
+    try:
+        member_id = core_methods.check_request(request)
+    except BadRequest:
         return render(request, 'error.html', {
             'error_name': 'QueryError',
             'error_description': 'Неизвестный тип запроса'
         })
+    portal = create_portal(member_id)
+    settings_portal = get_object_or_404(SettingsPortal, portal=portal)
+    user_info = core_methods.get_current_user(request, auth_id, portal)
 
-    portal: Portals = create_portal(member_id)
-    user_info = get_current_user(request, auth_id, portal)
+    if 'AUTH_ID' in request.POST:
+        form = SettingsPortalForm(instance=settings_portal)
+    else:
+        form = SettingsPortalForm(request.POST or None, instance=settings_portal)
+        if form.is_valid():
+            fields_form = form.save(commit=False)
+            fields_form.portal = portal
+            fields_form.save()
 
     context = {
+        'title': title,
+        'title_app': title_app,
         'member_id': member_id,
         'user': user_info,
+        'form': form,
+        'action_url': reverse_lazy("settings:index")
     }
     response = render(request, template, context)
     if auth_id:

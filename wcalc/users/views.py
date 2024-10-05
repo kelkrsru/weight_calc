@@ -24,10 +24,6 @@ class ChangeUser(UpdateView):
         return User.objects.get(pk=self.request.user.pk)
 
 
-def signup_complete(request):
-    template = 'users/signup_complete.html'
-
-
 class Login(auth_views.LoginView):
     form_class = LoginForm
     template_name = 'users/login.html'

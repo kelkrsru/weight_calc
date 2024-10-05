@@ -3,8 +3,255 @@
 
 {% block title %}Карточка сделки{% endblock %}
 {% block content %}
+  {% include 'includes/modals.html' %}
+  {% load static %}
+  <div class="container-fluid mt-5">
+    <div class="card bg-light">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex flex-row-reverse align-items-center">
+              <a href="{% url 'dealcard:index' %}?member_id={{ member_id }}&deal_id={{ deal_id }}"
+                 class="btn btn-outline-success ms-3">Обновить данные из сделки</a>
+              <button id="btn-send-deal" class="btn btn-outline-primary ms-3" disabled onclick="sendDeal()">Отправить в сделку</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid mt-3">
+    <table class="table table-striped align-baseline" id="main-table">
+      <thead>
+      <tr>
+        <th scope="col" width="5%" id="num">#</th>
+        <th scope="col" width="30%" id="product-name">Наименование</th>
+        <th scope="col" width="10%" id="quantity">Количество</th>
+        <th scope="col" width="20%" id="package">Упаковка</th>
+        <th scope="col" width="10%" id="quantity-packages">Кол-во упаковок</th>
+        <th scope="col" width="10%" id="quantity-pallet">Кол-во паллет</th>
+        <th scope="col" width="15%" id="tonnage">Тоннаж заказа, кг.</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% if productrows %}
+        {% for productrow in productrows %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            {# Номер строки #}
+            <td>{{ productrow.PRODUCT_NAME }}</td>
+            {# Наименование продукта #}
+            <td data-name="quantity">{{ productrow.QUANTITY }}</td>
+            {# Количество продукта #}
+            <td>
+              <select class="form-select" name="package" id="package-{{ productrow.id }}"
+                      onchange="calculationValues({{ productrow.id }}, this.value)">
+                <option value="0" {% if not productrow.PACKAGE %}selected{% endif %}>Не выбрано</option>
+                {% for package in packages %}
+                  <option value="{{ package.id }}"
+                          {% if productrow.PACKAGE.id == package.id %}selected{% endif %}>{{ package.NAME }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            {# Упаковка #}
+            <td data-name="quantity-packages" id="quantity-packages-{{ productrow.id }}">
+              {% if productrow.QUANTITY_PACKAGES %}{{ productrow.QUANTITY_PACKAGES }}{% else %}0{% endif %}</td>
+            {# Кол-во упаковок #}
+            <td data-name="quantity-pallet" id="quantity-pallet-{{ productrow.id }}">
+              {% if productrow.QUANTITY_PALLETS %}{{ productrow.QUANTITY_PALLETS }}{% else %}0{% endif %}</td>
+            {# Кол-во паллет #}
+            <td data-name="tonnage" id="tonnage-{{ productrow.id }}">
+              {% if productrow.TONNAGE %}{{ productrow.TONNAGE }}{% else %}0{% endif %}</td>
+            {# Тоннаж заказа, кг. #}
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="7">Товары отсутствуют в сделке</td>
+        </tr>
+      {% endif %}
+      </tbody>
+      <tfoot>
+      <tr>
+        <th></th>
+        <th>Итого:</th>
+        <th id="total-quantity"></th>
+        <th></th>
+        <th id="total-quantity-packages"></th>
+        <th id="total-quantity-pallet"></th>
+        <th id="total-tonnage"></th>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
 
 {% endblock %}
 {% block user_scripts %}
+  <script>
+      function calculateTotals() {
+          let quantity = document.querySelectorAll('[data-name="quantity"]');
+          let quantity_packages = document.querySelectorAll('[data-name="quantity-packages"]');
+          let quantity_pallet = document.querySelectorAll('[data-name="quantity-pallet"]');
+          let tonnage = document.querySelectorAll('[data-name="tonnage"]');
+          let td_total_quantity = document.querySelector('#total-quantity');
+          let td_total_quantity_packages = document.querySelector('#total-quantity-packages');
+          let td_total_quantity_pallet = document.querySelector('#total-quantity-pallet');
+          let td_total_tonnage = document.querySelector('#total-tonnage');
+          let total_quantity = 0;
+          let total_quantity_packages = 0;
+          let total_quantity_pallet = 0;
+          let total_tonnage = 0;
+          quantity.forEach(function (element) {
+              total_quantity += parseFloat(element.innerHTML.replace(",", "."));
+          });
+          td_total_quantity.innerHTML = total_quantity.toFixed(2);
+          quantity_packages.forEach(function (element) {
+              total_quantity_packages += parseFloat(element.innerHTML.replace(",", "."));
+          });
+          td_total_quantity_packages.innerHTML = total_quantity_packages.toFixed(2);
+          quantity_pallet.forEach(function (element) {
+              total_quantity_pallet += parseFloat(element.innerHTML.replace(",", "."));
+          });
+          td_total_quantity_pallet.innerHTML = total_quantity_pallet.toFixed(2);
+          tonnage.forEach(function (element) {
+              total_tonnage += parseFloat(element.innerHTML.replace(",", "."));
+          });
+          td_total_tonnage.innerHTML = total_tonnage.toFixed(2);
+          checkPallet();
+      }
 
+      function checkPallet() {
+          let quantity_pallet = document.querySelectorAll('[data-name="quantity-pallet"]');
+          let td_total_quantity_pallet = document.querySelector('#total-quantity-pallet');
+          let btn_send_deal = document.querySelector('#btn-send-deal');
+          quantity_pallet.forEach(function (element) {
+              const value = element.innerHTML.replace(",", ".");
+              if (Math.round(value) !== parseFloat(value)) {
+                  element.classList.add('bg-danger', 'text-white');
+                  btn_send_deal.disabled = true;
+              } else {
+                  element.classList.remove('bg-danger', 'text-white');
+                  btn_send_deal.disabled = false;
+              }
+          });
+          const value = td_total_quantity_pallet.innerHTML.replace(",", ".");
+          if (Math.round(value) !== parseFloat(value)) {
+              td_total_quantity_pallet.classList.add('bg-danger', 'text-white');
+              btn_send_deal.disabled = true;
+          } else {
+              td_total_quantity_pallet.classList.remove('bg-danger', 'text-white');
+              btn_send_deal.disabled = false;
+          }
+      }
+
+      function calculationValues(productrow_id, package_id) {
+          $.ajax({
+              url: "{% url 'dealcard:calculate' %}",
+              type: "POST",
+              data: {productrow_id: productrow_id, package_id: package_id},
+              success: function (response) {
+                  if (response.result) {
+                      document.querySelector('#quantity-packages-' + productrow_id).innerHTML = response.quantity_packages;
+                      document.querySelector('#quantity-pallet-' + productrow_id).innerHTML = response.quantity_pallet;
+                      document.querySelector('#tonnage-' + productrow_id).innerHTML = response.tonnage;
+                      calculateTotals();
+                  } else {
+                      const modal_error = new bootstrap.Modal(document.querySelector('#modal-error'));
+                      document.querySelector('#modal-error-title').textContent = 'Ошибка';
+                      document.querySelector('#modal-error-text').textContent = response.error;
+                      modal_error.show();
+                  }
+              },
+              error: function () {
+                  const modal_error = new bootstrap.Modal(document.querySelector('#modal-error'));
+                  document.querySelector('#modal-error-title').textContent = 'Ошибка';
+                  document.querySelector('#modal-error-text').textContent = 'Ошибка при расчете значений';
+                  modal_error.show();
+              }
+          });
+      }
+
+      function sendDeal() {
+          let total_quantity_pallet = document.querySelector('#total-quantity-pallet').innerHTML;
+          let total_tonnage = document.querySelector('#total-tonnage').innerHTML;
+          $.ajax({
+              url: "{% url 'dealcard:send-deal' %}",
+              type: "POST",
+              data: {member_id: "{{ member_id }}", deal_id: "{{ deal_id }}", quantity_pallet: total_quantity_pallet, tonnage: total_tonnage},
+              success: function (response) {
+                  if (response.result) {
+                      const modal_success = new bootstrap.Modal(document.querySelector('#modal-success'));
+                      document.querySelector('#modal-success-title').textContent = 'Успех';
+                      document.querySelector('#modal-success-text').innerHTML = '<p>Количество паллет: ' + total_quantity_pallet + '</p><p>Тоннаж: ' + total_tonnage + '</p><p>Успешно переданы в сделку</p>';
+                      modal_success.show();
+                  } else {
+                      const modal_error = new bootstrap.Modal(document.querySelector('#modal-error'));
+                      document.querySelector('#modal-error-title').textContent = 'Ошибка';
+                      document.querySelector('#modal-error-text').textContent = response.error;
+                      modal_error.show();
+                  }
+              },
+              error: function () {
+                  const modal_error = new bootstrap.Modal(document.querySelector('#modal-error'));
+                  document.querySelector('#modal-error-title').textContent = 'Ошибка';
+                  document.querySelector('#modal-error-text').textContent = 'Ошибка при передачи значений в сделку';
+                  modal_error.show();
+              }
+          });
+      }
+
+      $(document).ready(function () {
+          calculateTotals();
+          checkPallet();
+          $('#main-table').DataTable({
+              dom: '<"row"<"col-4"B><"col-8 d-flex justify-content-end"l<"ms-3"f>>>rtip',
+              scrollX: true,
+              //scrollY: '600px',
+              ScrollCollapse: true,
+              paging: false,
+              bAutoWidth:false,
+              language: {
+                  "url": "{% static 'js/datatables.ru.lang' %}",
+              },
+              fixedColumns: {
+                  left: 1,
+              },
+              fixedHeader: true,
+              buttons: {
+                  buttons: [
+                      {
+                          extend: 'excel',
+                          header: true,
+                          footer: false,
+                          text: 'Экспорт в excel',
+                          className: 'btn btn-outline-primary',
+                          extension: '.xlsx',
+                          filename: 'Отчет-по-остаткам',
+                          title: null,
+                          exportOptions: {
+                              columns: ':visible',
+                              stripHtml: false,
+                              format: {
+                                  body: function (data, row, column, node) {
+                                      if (column === 3) {
+                                          return $(data).find("option:selected").text();
+                                      } else {
+                                          data = $('<p>' + data + '</p>').text();
+                                          return $.isNumeric(data.replace(',', '.')) ? data.replace(',', '.') : data;
+                                      }
+                                  },
+                                  footer: function (data, row, column, node) {
+                                      data = $('<p>' + data + '</p>').text();
+                                      return $.isNumeric(data.replace(',', '.')) ? data.replace(',', '.') : data;
+                                  }
+                              }
+                          }
+                      },
+                  ],
+                  dom: {button: {className: 'btn'}},
+              },
+          });
+      });
+  </script>
 {% endblock %}

@@ -2,8 +2,6 @@ from django.conf import settings as app_settings
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
-from urllib.parse import urlunsplit
-
 from pybitrix24 import Bitrix24
 
 from core.models import Portals

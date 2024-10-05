@@ -12,17 +12,18 @@ class SettingsPortal(models.Model):
         related_name='settings_portal',
         on_delete=models.CASCADE,
     )
-    # package_name = models.CharField(
-    #     'Название упаковки',
-    #     help_text='Текстовое поле, размер 1024 символа',
-    #     max_length=1024,
-    #     default=''
-    # )
-    # weight = models.FloatField(
-    #     'Создавать элемент смарт процесса',
-    #     help_text='Число с плавающей точкой, два знака после запятой',
-    #
-    # )
+    quantity_pallet_code = models.CharField(
+        'Код поля количество паллет',
+        help_text='Код поля количество паллет в сделке',
+        default='UF_CRM_0000000000',
+        max_length=30,
+    )
+    tonnage_code = models.CharField(
+        'Код поля тоннаж',
+        help_text='Код поля тоннаж в сделке',
+        default='UF_CRM_0000000000',
+        max_length=30,
+    )
 
     class Meta:
         verbose_name = 'Настройка портала'

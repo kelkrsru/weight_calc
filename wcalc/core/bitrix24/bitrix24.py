@@ -3,9 +3,9 @@ import itertools
 
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from pybitrix24 import Bitrix24
 
 from core.models import Portals
-from pybitrix24 import Bitrix24
 
 
 def create_portal(member_id: str) -> Portals:
@@ -13,8 +13,7 @@ def create_portal(member_id: str) -> Portals:
 
     portal: Portals = get_object_or_404(Portals, member_id=member_id)
 
-    if ((portal.auth_id_create_date + datetime.timedelta(0, 3600)) <
-            timezone.now()):
+    if ((portal.auth_id_create_date + datetime.timedelta(0, 3600)) < timezone.now()):
         bx24 = Bitrix24(portal.name)
         bx24.auth_hostname = 'oauth.bitrix.info'
         bx24._refresh_token = portal.refresh_id

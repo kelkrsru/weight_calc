@@ -144,4 +144,41 @@ ADMIN_REORDER = (
         'users.User',
         'auth.Group',
     ]},
+    {'label': 'Приложение', 'app': 'core', 'models': [
+        'core.ProductRow',
+        'core.Package',
+    ]},
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': os.getenv('LOG_LEVEL'),
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'file',
+            'filename': os.getenv('LOG_FILE'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+        }
+    },
+    'loggers': {
+        '': {
+            'level': os.getenv('LOG_LEVEL'),
+            'handlers': ['file',]
+        }
+    }
+}

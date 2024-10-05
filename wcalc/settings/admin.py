@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 import settings.models as settings_models
 
 

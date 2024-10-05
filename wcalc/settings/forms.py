@@ -8,3 +8,4 @@ class SettingsPortalForm(forms.ModelForm):
 
     class Meta:
         model = SettingsPortal
+        fields = ('quantity_pallet_code', 'tonnage_code')
