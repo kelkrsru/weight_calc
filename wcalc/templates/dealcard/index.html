@@ -130,7 +130,7 @@
               const value = element.innerHTML.replace(",", ".");
               if (Math.round(value) !== parseFloat(value)) {
                   element.classList.add('bg-danger', 'text-white');
-                  flag = true;
+                  // flag = true;
               } else {
                   element.classList.remove('bg-danger', 'text-white');
               }
