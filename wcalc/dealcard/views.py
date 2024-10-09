@@ -110,6 +110,8 @@ def calculate(request):
         logger.error(f'{NEW_STR}package {ex.args[0] - ex.args[1]}')
         return JsonResponse({'error': f'{ex.args[0] - ex.args[1]}'})
 
+    productrow.PACKAGE = package
+    productrow.save()
     quantity_packages, quantity_pallet, tonnage = dealcard_methods.calculate_values_productrows(productrow)
     logger.info(f'{NEW_STR}{quantity_packages=}  {quantity_pallet=}  {tonnage=}')
     logger.info(f'{NEW_STR}Сохранили значения в БД')
