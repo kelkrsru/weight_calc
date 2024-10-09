@@ -140,11 +140,11 @@
           if (Math.round(value) !== parseFloat(value)) {
               td_total_quantity_pallet.classList.add('bg-danger', 'text-white');
               btn_send_deal.disabled = true;
-              return false;
+              return 0;
           } else {
               td_total_quantity_pallet.classList.remove('bg-danger', 'text-white');
               btn_send_deal.disabled = false;
-              return true;
+              return 1;
           }
       }
 
@@ -168,7 +168,7 @@
               btn_send_deal.disabled = true;
           } else {
               td_total_quantity_packages.classList.remove('bg-danger', 'text-white');
-              if (flag) {
+              if (flag === 1) {
                   btn_send_deal.disabled = false;
               }
           }
