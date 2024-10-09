@@ -118,12 +118,11 @@
               total_tonnage += parseFloat(element.innerHTML.replace(",", "."));
           });
           td_total_tonnage.innerHTML = total_tonnage.toFixed(2);
-          const flag = checkPallet();
-          checkPackages(flag);
+          let flag = checkPallet(false);
+          flag = checkPackages(flag);
       }
 
-      function checkPallet() {
-          let flag = false;
+      function checkPallet(flag) {
           let quantity_pallet = document.querySelectorAll('[data-name="quantity-pallet"]');
           let td_total_quantity_pallet = document.querySelector('#total-quantity-pallet');
           let btn_send_deal = document.querySelector('#btn-send-deal');
@@ -166,6 +165,7 @@
               td_total_quantity_packages.classList.remove('bg-danger', 'text-white');
           }
           btn_send_deal.disabled = flag;
+          return flag;
       }
 
       function calculationValues(productrow_id, package_id) {
@@ -226,9 +226,8 @@
 
       $(document).ready(function () {
           calculateTotals();
-          const flag = checkPallet();
-          console.log(flag);
-          checkPackages(flag);
+          let flag = checkPallet(false);
+          flag = checkPackages(flag);
           $('#main-table').DataTable({
               dom: '<"row"<"col-4"B><"col-8 d-flex justify-content-end"l<"ms-3"f>>>rtip',
               scrollX: true,
