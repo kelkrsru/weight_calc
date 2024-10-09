@@ -123,7 +123,7 @@
       }
 
       function checkPallet() {
-          let flag = 0;
+          let flag = 1;
           let quantity_pallet = document.querySelectorAll('[data-name="quantity-pallet"]');
           let td_total_quantity_pallet = document.querySelector('#total-quantity-pallet');
           let btn_send_deal = document.querySelector('#btn-send-deal');
@@ -132,20 +132,19 @@
               if (Math.round(value) !== parseFloat(value)) {
                   element.classList.add('bg-danger', 'text-white');
                   btn_send_deal.disabled = true;
+                  flag = 0;
               } else {
                   element.classList.remove('bg-danger', 'text-white');
                   btn_send_deal.disabled = false;
-                  flag = 1;
               }
           });
           const value = td_total_quantity_pallet.innerHTML.replace(",", ".");
           if (Math.round(value) !== parseFloat(value)) {
               td_total_quantity_pallet.classList.add('bg-danger', 'text-white');
-              return flag;
           } else {
               td_total_quantity_pallet.classList.remove('bg-danger', 'text-white');
-              return flag;
           }
+          return flag;
       }
 
       function checkPackages(flag) {
