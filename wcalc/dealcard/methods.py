@@ -38,16 +38,7 @@ def create_productrows_in_db(portal, deal_id, productrows):
                                   f' DEAL_ID {productrow_db.OWNER_ID}\n')
         else:
             if productrow_db.PACKAGE:
-                quantity_packages = decimal.Decimal(
-                    round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_JARS, 2))
-                quantity_pallet = decimal.Decimal(
-                    round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_ON_PALLET, 2))
-                tonnage = decimal.Decimal(round(productrow_db.PACKAGE.WEIGHT_BRUTTO * quantity_pallet))
-
-                productrow_db.QUANTITY_PACKAGES = quantity_packages
-                productrow_db.QUANTITY_PALLETS = quantity_pallet
-                productrow_db.TONNAGE = tonnage
-                productrow_db.save()
+                calculate_values_productrows(productrow_db)
             returning_log_msg += (f'    Обновлена товарная позиция ID {productrow_db.id}, PRODUCTROW_ID '
                                   f'{productrow_db.PRODUCTROW_ID}, PORTAL {productrow_db.PORTAL}'
                                   f' DEAL_ID {productrow_db.OWNER_ID}\n')
@@ -63,3 +54,19 @@ def create_productrows_in_db(portal, deal_id, productrows):
     productrows_db = ProductRow.objects.filter(PORTAL=portal, OWNER_TYPE='D', OWNER_ID=deal_id)
 
     return productrows_db, returning_log_msg
+
+
+def calculate_values_productrows(productrow):
+    """Метод для пересчета и сохранения в товарную позицию значений."""
+    quantity_packages = decimal.Decimal(
+        round(productrow.QUANTITY / productrow.PACKAGE.QUANTITY_JARS, 2))
+    quantity_pallet = decimal.Decimal(
+        round(productrow.QUANTITY / productrow.PACKAGE.QUANTITY_ON_PALLET, 2))
+    tonnage = decimal.Decimal(round(productrow.PACKAGE.WEIGHT_BRUTTO * quantity_pallet))
+
+    productrow.QUANTITY_PACKAGES = quantity_packages
+    productrow.QUANTITY_PALLETS = quantity_pallet
+    productrow.TONNAGE = tonnage
+    productrow.save()
+
+    return quantity_packages, quantity_pallet, tonnage

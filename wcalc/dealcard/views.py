@@ -110,16 +110,8 @@ def calculate(request):
         logger.error(f'{NEW_STR}package {ex.args[0] - ex.args[1]}')
         return JsonResponse({'error': f'{ex.args[0] - ex.args[1]}'})
 
-    quantity_packages = round(productrow.QUANTITY / package.QUANTITY_JARS, 2)
-    quantity_pallet = round(productrow.QUANTITY / package.QUANTITY_ON_PALLET, 2)
-    tonnage = round(package.WEIGHT_BRUTTO * quantity_pallet)
+    quantity_packages, quantity_pallet, tonnage = dealcard_methods.calculate_values_productrows(productrow)
     logger.info(f'{NEW_STR}{quantity_packages=}  {quantity_pallet=}  {tonnage=}')
-
-    productrow.PACKAGE = package
-    productrow.QUANTITY_PACKAGES = quantity_packages
-    productrow.QUANTITY_PALLETS = quantity_pallet
-    productrow.TONNAGE = tonnage
-    productrow.save()
     logger.info(f'{NEW_STR}Сохранили значения в БД')
 
     return JsonResponse({'result': 'ok', 'quantity_packages': quantity_packages, 'quantity_pallet': quantity_pallet,
