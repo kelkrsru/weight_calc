@@ -210,7 +210,7 @@ class Package(CreatedModel):
     """Модель Упаковки."""
     ACTIVE = models.BooleanField('Активность', default=True)
     NAME = models.CharField('Наименование', max_length=255, unique=True)
-    WEIGHT = models.DecimalField('Вес', max_digits=12, decimal_places=2)
+    WEIGHT = models.DecimalField('Вес', max_digits=13, decimal_places=3)
     QUANTITY_JARS = models.PositiveIntegerField('Количество банок')
     QUANTITY_ON_PALLET = models.PositiveIntegerField('Количество на паллете')
     WEIGHT_BRUTTO = models.DecimalField('Вес брутто паллета', max_digits=12, decimal_places=2)
