@@ -119,6 +119,7 @@
           });
           td_total_tonnage.innerHTML = total_tonnage.toFixed(2);
           checkPallet();
+          checkPackages();
       }
 
       function checkPallet() {
@@ -141,6 +142,30 @@
               btn_send_deal.disabled = true;
           } else {
               td_total_quantity_pallet.classList.remove('bg-danger', 'text-white');
+              btn_send_deal.disabled = false;
+          }
+      }
+
+      function checkPackages() {
+          let quantity_packages = document.querySelectorAll('[data-name="quantity-packages"]');
+          let td_total_quantity_packages = document.querySelector('#total-quantity-packages');
+          let btn_send_deal = document.querySelector('#btn-send-deal');
+          quantity_packages.forEach(function (element) {
+              const value = element.innerHTML.replace(",", ".");
+              if (Math.round(value) !== parseFloat(value)) {
+                  element.classList.add('bg-danger', 'text-white');
+                  btn_send_deal.disabled = true;
+              } else {
+                  element.classList.remove('bg-danger', 'text-white');
+                  btn_send_deal.disabled = false;
+              }
+          });
+          const value = td_total_quantity_packages.innerHTML.replace(",", ".");
+          if (Math.round(value) !== parseFloat(value)) {
+              td_total_quantity_packages.classList.add('bg-danger', 'text-white');
+              btn_send_deal.disabled = true;
+          } else {
+              td_total_quantity_packages.classList.remove('bg-danger', 'text-white');
               btn_send_deal.disabled = false;
           }
       }
@@ -204,6 +229,7 @@
       $(document).ready(function () {
           calculateTotals();
           checkPallet();
+          checkPackages();
           $('#main-table').DataTable({
               dom: '<"row"<"col-4"B><"col-8 d-flex justify-content-end"l<"ms-3"f>>>rtip',
               scrollX: true,
