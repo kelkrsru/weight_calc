@@ -233,6 +233,7 @@
       $(document).ready(function () {
           calculateTotals();
           const flag = checkPallet();
+          console.log(flag);
           checkPackages(flag);
           $('#main-table').DataTable({
               dom: '<"row"<"col-4"B><"col-8 d-flex justify-content-end"l<"ms-3"f>>>rtip',
