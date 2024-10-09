@@ -35,6 +35,15 @@ def create_productrows_in_db(portal, deal_id, productrows):
                                   f'{productrow_db.PRODUCTROW_ID}, PORTAL {productrow_db.PORTAL}'
                                   f' DEAL_ID {productrow_db.OWNER_ID}\n')
         else:
+            if productrow_db.PACKAGE:
+                quantity_packages = round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_JARS, 2)
+                quantity_pallet = round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_ON_PALLET, 2)
+                tonnage = round(productrow_db.PACKAGE.WEIGHT_BRUTTO * quantity_pallet)
+
+                productrow.QUANTITY_PACKAGES = quantity_packages
+                productrow.QUANTITY_PALLETS = quantity_pallet
+                productrow.TONNAGE = tonnage
+                productrow.save()
             returning_log_msg += (f'    Обновлена товарная позиция ID {productrow_db.id}, PRODUCTROW_ID '
                                   f'{productrow_db.PRODUCTROW_ID}, PORTAL {productrow_db.PORTAL}'
                                   f' DEAL_ID {productrow_db.OWNER_ID}\n')
