@@ -1,3 +1,5 @@
+import decimal
+
 from django.shortcuts import render
 
 from core.bitrix24.bitrix24 import DealB24
@@ -36,9 +38,11 @@ def create_productrows_in_db(portal, deal_id, productrows):
                                   f' DEAL_ID {productrow_db.OWNER_ID}\n')
         else:
             if productrow_db.PACKAGE:
-                quantity_packages = round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_JARS, 2)
-                quantity_pallet = round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_ON_PALLET, 2)
-                tonnage = round(productrow_db.PACKAGE.WEIGHT_BRUTTO * quantity_pallet)
+                quantity_packages = decimal.Decimal(
+                    round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_JARS, 2))
+                quantity_pallet = decimal.Decimal(
+                    round(productrow_db.QUANTITY / productrow_db.PACKAGE.QUANTITY_ON_PALLET, 2))
+                tonnage = decimal.Decimal(round(productrow_db.PACKAGE.WEIGHT_BRUTTO * quantity_pallet))
 
                 productrow.QUANTITY_PACKAGES = quantity_packages
                 productrow.QUANTITY_PALLETS = quantity_pallet
