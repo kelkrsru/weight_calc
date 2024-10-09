@@ -123,6 +123,7 @@
       }
 
       function checkPallet() {
+          let flag = 0;
           let quantity_pallet = document.querySelectorAll('[data-name="quantity-pallet"]');
           let td_total_quantity_pallet = document.querySelector('#total-quantity-pallet');
           let btn_send_deal = document.querySelector('#btn-send-deal');
@@ -134,17 +135,16 @@
               } else {
                   element.classList.remove('bg-danger', 'text-white');
                   btn_send_deal.disabled = false;
+                  flag = 1;
               }
           });
           const value = td_total_quantity_pallet.innerHTML.replace(",", ".");
           if (Math.round(value) !== parseFloat(value)) {
               td_total_quantity_pallet.classList.add('bg-danger', 'text-white');
-              btn_send_deal.disabled = true;
-              return 0;
+              return flag;
           } else {
               td_total_quantity_pallet.classList.remove('bg-danger', 'text-white');
-              btn_send_deal.disabled = false;
-              return 1;
+              return flag;
           }
       }
 
@@ -159,18 +159,15 @@
                   btn_send_deal.disabled = true;
               } else {
                   element.classList.remove('bg-danger', 'text-white');
-                  btn_send_deal.disabled = false;
+                  if (flag === 1)
+                    btn_send_deal.disabled = false;
               }
           });
           const value = td_total_quantity_packages.innerHTML.replace(",", ".");
           if (Math.round(value) !== parseFloat(value)) {
               td_total_quantity_packages.classList.add('bg-danger', 'text-white');
-              btn_send_deal.disabled = true;
           } else {
               td_total_quantity_packages.classList.remove('bg-danger', 'text-white');
-              if (flag === 1) {
-                  btn_send_deal.disabled = false;
-              }
           }
       }
 
