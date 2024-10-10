@@ -117,7 +117,7 @@ class ProductRow(CreatedModel):
     MEASURE_CODE = models.PositiveIntegerField('Код единицы измерения')
     MEASURE_NAME = models.CharField('Единица измерения', max_length=10)
     SORT = models.PositiveIntegerField('Сортировка')
-    XML_ID = models.PositiveIntegerField('XML_ID', null=True, blank=True)
+    XML_ID = models.CharField('XML_ID', null=True, blank=True, max_length=256)
     TYPE = models.PositiveSmallIntegerField(
         'Тип товарной позиции',
         help_text='1 - простой товар, 4 - торговое предложение/вариация'
